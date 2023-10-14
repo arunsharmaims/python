@@ -1,0 +1,36 @@
+import requests
+from bs4 import BeautifulSoup
+
+def get_article_title():
+    url = "https://www.python.org/"
+    response = requests.get(url)
+    
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, 'html.parser')
+        articles = []
+        
+        for article_title in soup.select(".blog-widget li"):
+            extracted_title = article_title.a.text.strip()
+            articles.append(extracted_title)
+        
+        return articles
+    else:
+        print('failed to get the data. Statuc Code is: {response.status_code}')
+        return[]
+
+if __name__ == '__main__':
+    Extracted_articles = get_article_title()
+    filename2 = 'extracted.txt'
+    if Extracted_articles:
+        print('List of articles')
+        for word,article_title in enumerate(Extracted_articles):
+            print(f"{word}.{article_title}")
+            
+    else:
+        print('no articles were founded')
+        
+    with open(filename2, "w") as file:
+        file.write("\n".join(Extracted_articles))
+        
+else:
+    print('Failed to Extract')
